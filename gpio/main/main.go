@@ -1,7 +1,7 @@
 package main
 
-import "gpio"
+import "vnw/gpio"
 
 func main() {
-  gpio.High()
+  gpio.Low()
 }
