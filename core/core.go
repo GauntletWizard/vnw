@@ -20,7 +20,7 @@ var fLock bool
 var flTimer time.Time
 var fUnlock bool
 
-func init() {
+func Start() {
 	Clear()
 	doorState = false
 	doorTimer = time.AfterFunc(time.Duration(0), Lock)

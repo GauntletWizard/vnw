@@ -20,7 +20,7 @@ var nfcdevice = flag.String("nfcdevice", "pn532_uart:/dev/ttyUSB0:115200", "LibN
 var nfcpoll = flag.Int("nfcpoll", 100, "Miliseconds between NFC Polling routines")
 var nfcwait = flag.Int("nfcwait", 2000, "Miliseconds to wait between a NFC event and next poll")
 
-func init() {
+func Start() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	cs := C.CString(*nfcdevice)
 	C.init_globals(cs)
