@@ -9,7 +9,7 @@ import (
   "log"
 )
 
-var httplistener = flag.String("port", ":80", "Listen Address for webserver")
+var httplistener = flag.String("port", ":8080", "Listen Address for webserver")
 
 func init() {
   flag.Parse()
@@ -18,7 +18,10 @@ func init() {
 func Start() {
   http.HandleFunc("/cards", listCards)
   http.HandleFunc("/status", statuss)
-  http.ListenAndServe(*httplistener, nil)
+  err := http.ListenAndServe(*httplistener, nil)
+	if err != nil {
+	log.Fatal(err)
+	}
 }
 
 func listCards(w http.ResponseWriter, r *http.Request) {
