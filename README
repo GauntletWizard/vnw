@@ -1,0 +1,8 @@
+
+
+Install checklist:
+NTPD - Nothing builds right without it
+GO - Easy to install from source
+libusb: opkg. Needs full, and compatibility layer, and devs for each. I think.
+libnfc: From source.
+ftdi: http://www.ftdichip.com/Drivers/D2XX.htm
