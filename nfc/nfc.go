@@ -1,14 +1,14 @@
 package nfc
 
 import (
-"vnw/configfile"
+//"vnw/config"
 "github.com/fuzxxl/nfc/latest/nfc"
 "flag"
 "log"
-"time"
+// "time"
 )
 
-var nfcdevice = flag.String("nfcdevice", "", "LibNFC config string for NFC device to open")
+var nfcdevice = flag.String("nfcdevice", "pn532_uart:/dev/ttyUSB0:115200", "LibNFC config string for NFC device to open")
 var nfcpoll = flag.Int("nfcpoll", 100, "Miliseconds between NFC Polling routines")
 var nfcwait = flag.Int("nfcwait", 2000, "Miliseconds to wait between a NFC event and next poll")
 
@@ -18,8 +18,8 @@ func Poll() {
     log.Fatal("Failed to open NFC Device ", *nfcdevice, err)
   }
   nm := nfc.Modulation{
-    Type: nfc.ISO14443A
-    Baud: nfc.NBR_106
+    Type: nfc.ISO14443A,
+    BaudRate: nfc.NBR_106,
   }
   
   targets, err := d.InitiatorListPassiveTargets(nm)
