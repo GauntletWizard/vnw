@@ -1,6 +1,3 @@
-#include <nfc/nfc.h>
-#include <string.h>
-#include <stdlib.h>
 #include "nfc.h"
 
 nfc_device *dev;
@@ -22,29 +19,55 @@ int init_globals(char* connstring) {
     printf("Initialized NFC Device %s.\n", connstring);
 }
 
-char** get_ids(int mask, int c) {
+//
+int p;
+int res;
+nfc_target ant[MAX_TARGET_COUNT];
+void read_ids(nfc_modulation nm) {
+	p = 0;
+	res = 0;
+	res = nfc_initiator_list_passive_targets(dev, nm, ant, MAX_TARGET_COUNT);
+	
+}
+
+char* get_id() {
+	char* target = NULL;
+	size_t sz;
+	if (p < res) {
+		sz = ant[p].nti.nai.szUidLen;
+		target = malloc(sz + 1);
+		memcpy(target, ant[p].nti.nai.abtUid, sz);
+		target[sz] = 0;
+		p++;
+	}
+	return target;
+}
+		
+
+char** get_ids(int* count) {
 	nfc_modulation nm;
 	int res = 0;
+	int c = 0;
 	nfc_target ant[MAX_TARGET_COUNT];
 	char** targets = (char**) malloc(sizeof(char*) * MAX_TARGET_COUNT);
 	size_t sz;
 
 
-    if (mask & 0x1) {
       nm.nmt = NMT_ISO14443A;
       nm.nbr = NBR_106;
       // List ISO14443A targets
-      if ((res = nfc_initiator_list_passive_targets(dev, nm, ant, MAX_TARGET_COUNT)) >= 0) {
+      if ((res = nfc_initiator_list_passive_targets(dev, nm, ant, MAX_TARGET_COUNT - c)) >= 0) {
         int n;
         for (n = 0; n < res; n++) {
 		sz = ant[n].nti.nai.szUidLen;
+		printf("Found target: Type: %d Baud: %d\n", ant[n].nm.nmt, ant[n].nm.nbr);
 		targets[c] = malloc(sz + 1);
 		memcpy(targets[c], ant[n].nti.nai.abtUid, sz);
 		targets[c][sz] = 0;
 		c++;
         }
       }
-    }
+    *count = c;
     return targets;
 }
 /*
