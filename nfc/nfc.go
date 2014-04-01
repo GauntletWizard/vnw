@@ -51,9 +51,9 @@ func Poll() {
 			for j := range i {
 				core.Auth(i[j])
 			}
-			time.Sleep(time.Millisecond * *nfcwait)
+			time.Sleep(time.Millisecond * time.Duration(*nfcwait))
 		} else {
-			time.Sleep(time.Millisecond * *nfcpoll)
+			time.Sleep(time.Millisecond * time.Duration(*nfcpoll))
 		}
 	}
 }
