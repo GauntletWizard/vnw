@@ -4,7 +4,7 @@ import (
 	"flag"
 	"log"
 	"vnw/core"
-	// "time"
+	"time"
 	"encoding/hex"
 	"unsafe"
 )
@@ -47,13 +47,13 @@ func Poll() {
 	for {
 		i := GetIds()
 		log.Print(i)
-		if len(i) {
+		if len(i) > 0 {
 			for j := range i {
 				core.Auth(i[j])
 			}
-			time.Sleep(time.Millisecond * *nfcWait)
+			time.Sleep(time.Millisecond * *nfcwait)
 		} else {
-			time.Sleep(time.Millisecond * *nfcPoll)
+			time.Sleep(time.Millisecond * *nfcpoll)
 		}
 	}
 }
