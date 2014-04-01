@@ -10,6 +10,6 @@ printf("foo\n");
 import "C"
 
 func main() {
-  C.printthing()
-  C.ACFunction()
+	C.printthing()
+	C.ACFunction()
 }
