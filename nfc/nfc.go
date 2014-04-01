@@ -1,10 +1,9 @@
 package nfc
 
 import (
-	//"vnw/config"
 	"flag"
-	"github.com/fuzxxl/nfc/latest/nfc"
 	"log"
+	"vnw/core"
 	// "time"
 	"encoding/hex"
 	"unsafe"
@@ -44,38 +43,18 @@ func GetIds() []string {
 	}
 	return ids
 }
-
-func GetIdsold() []string {
-	ids := make([]string, 0)
-	count := C.int(0)
-	// Also need to free the strings pointed to by t1, which we do below.
-	t := C.get_ids(&count)
-	defer C.free(unsafe.Pointer(t))
-	log.Print(count, t)
-	for i := 0; i < int(count); i++ {
-		t1 := (*C.char)(unsafe.Pointer((uintptr(unsafe.Pointer(*t)) + (unsafe.Sizeof(t) * uintptr(i)))))
-		h := hex.EncodeToString([]byte(C.GoString(t1)))
-		log.Print("Target UID:", h)
-		ids = append(ids, h)
-		C.free(unsafe.Pointer(t1))
-	}
-	return ids
-}
-
 func Poll() {
-	log.Print(GetIds())
+	for {
+		i := GetIds()
+		log.Print(i)
+		if len(i) {
+			for j := range i {
+				core.Auth(i[j])
+			}
+			time.Sleep(time.Millisecond * *nfcWait)
+		} else {
+			time.Sleep(time.Millisecond * *nfcPoll)
+		}
+	}
 }
 
-func PollOld() {
-	d, err := nfc.Open(*nfcdevice)
-	if err != nil {
-		log.Fatal("Failed to open NFC Device ", *nfcdevice, err)
-	}
-	nm := nfc.Modulation{
-		Type:     nfc.ISO14443A,
-		BaudRate: nfc.NBR_106,
-	}
-
-	targets, err := d.InitiatorListPassiveTargets(nm)
-	log.Print(targets)
-}
