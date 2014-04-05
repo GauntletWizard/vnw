@@ -105,6 +105,9 @@ func validateCardlist(l *Cardlist) bool {
 			dave = true
 		}
 	}
+  if !(dave && ted && jp) {
+    log.Print("D, T, JP:", dave, ted, jp)
+  }
 	return (dave && ted && jp)
 }
 
