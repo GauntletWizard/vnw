@@ -28,7 +28,7 @@ type Cardlist map[string]*Member
 var Cards *Cardlist
 
 func init() {
-	c :=make(Cardlist)
+	c := make(Cardlist)
 	Cards = &c
 }
 
@@ -110,9 +110,9 @@ func validateCardlist(l *Cardlist) bool {
 			dave = true
 		}
 	}
-  if !(dave && ted && jp) {
-    log.Print("D, T, JP:", dave, ted, jp)
-  }
+	if !(dave && ted && jp) {
+		log.Print("D, T, JP:", dave, ted, jp)
+	}
 	return (dave && ted && jp)
 }
 

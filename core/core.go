@@ -4,15 +4,15 @@ package core
 
 import (
 	"flag"
+	"log"
 	"time"
 	"vnw/config"
 	"vnw/gpio"
-  "log"
 )
 
 var uTime = flag.Int("utime", 20, "Number of seconds to unlock on successful swipe")
 
-var failed []string
+var Failed map[string]bool
 var doorTimer *time.Timer
 var doorState bool
 var fuTimer time.Time
@@ -27,7 +27,7 @@ func init() {
 }
 
 func Clear() {
-	failed = make([]string, 10)
+	Failed = make(map[string]bool, 10)
 }
 
 func Auth(id string) {
@@ -38,8 +38,7 @@ func Auth(id string) {
 		m.Log(id)
 		Unlock()
 	} else {
-		failed = append(failed, id)
-		failed = failed[1:]
+		Failed[id] = true
 	}
 }
 

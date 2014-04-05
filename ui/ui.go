@@ -4,6 +4,7 @@ import (
 	"net/http"
   "flag"
   "vnw/config"
+  "vnw/config"
   "html/template"
   "fmt"
   "log"
@@ -29,11 +30,12 @@ func listCards(w http.ResponseWriter, r *http.Request) {
 }
 
 func statuss(w http.ResponseWriter, r *http.Request) {
-  t, err := template.New("statuszs").Parse("<!DOCTYPE HTML><html><head><title>Status Page for Lock Mechanism")
+  t, err := template.New("statuszs").Parse(`<!DOCTYPE HTML><html><head><title>Status Page for Lock Mechanism</title></head>
+<body><div>Recent Failed{{range .}}<div>{{.}}</div>{{end}}</div></body>`)
   if err != nil {
     log.Panic("Your template is bad, and you should feel bad!", err)
   }
-  _ = t
+  t.Execute(w, core.Failed)
 }
 
 

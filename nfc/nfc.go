@@ -1,12 +1,12 @@
 package nfc
 
 import (
+	"encoding/hex"
 	"flag"
 	"log"
-	"vnw/core"
 	"time"
-	"encoding/hex"
 	"unsafe"
+	"vnw/core"
 )
 
 /*
@@ -36,7 +36,7 @@ func GetIds() []string {
 	C.read_ids(nm)
 	id := C.get_id()
 	for id != nil {
-//		log.Print(ids)
+		//		log.Print(ids)
 		ids = append(ids, hex.EncodeToString([]byte(C.GoString(id))))
 		C.free(unsafe.Pointer(id))
 		id = C.get_id()
@@ -57,4 +57,3 @@ func Poll() {
 		}
 	}
 }
-
