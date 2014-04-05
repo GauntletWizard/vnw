@@ -5,6 +5,8 @@ import (
   "flag"
   "vnw/config"
   "html/template"
+  "fmt"
+  "log"
 )
 
 var httplistener = flag.String("port", ":80", "Listen Address for webserver")
@@ -21,15 +23,17 @@ func Start() {
 
 func listCards(w http.ResponseWriter, r *http.Request) {
   for i, j := range *config.Cards {
-    w.Write(i, j)
+    w.Write([]byte(i))
+    w.Write([]byte(fmt.Sprint(j)))
   }
 }
 
 func statuss(w http.ResponseWriter, r *http.Request) {
   t, err := template.New("statuszs").Parse("<!DOCTYPE HTML><html><head><title>Status Page for Lock Mechanism")
   if err != nil {
-    log.Error("Your template is bad, and you should feel bad!", err)
+    log.Panic("Your template is bad, and you should feel bad!", err)
   }
+  _ = t
 }
 
 
