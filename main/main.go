@@ -8,6 +8,6 @@ import (
 
 func main() {
 	config.Start()
-	go nfc.Poll()
+	nfc.Poll()
 	ui.Start()
 }

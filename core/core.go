@@ -32,6 +32,8 @@ func Clear() {
 
 func Auth(id string) {
 	m := (*config.Cards)[id]
+	log.Print("Saw card: ", id)
+	log.Print("Mapped to member: ", m)
 	if m != nil {
 		m.Log(id)
 		Unlock()

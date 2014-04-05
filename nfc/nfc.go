@@ -46,7 +46,7 @@ func GetIds() []string {
 func Poll() {
 	for {
 		i := GetIds()
-		log.Print(i)
+		//log.Print(i)
 		if len(i) > 0 {
 			for j := range i {
 				core.Auth(i[j])

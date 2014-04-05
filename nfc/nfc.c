@@ -27,7 +27,6 @@ void read_ids(nfc_modulation nm) {
 	p = 0;
 	res = 0;
 	res = nfc_initiator_list_passive_targets(dev, nm, ant, MAX_TARGET_COUNT);
-	
 }
 
 char* get_id() {

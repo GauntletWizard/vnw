@@ -27,6 +27,11 @@ type Cardlist map[string]*Member
 
 var Cards *Cardlist
 
+func init() {
+	c :=make(Cardlist)
+	Cards = &c
+}
+
 func Start() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
 	log.Print("Opening file ", *file, " for config database")
