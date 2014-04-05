@@ -7,6 +7,7 @@ import (
 	"time"
 	"vnw/config"
 	"vnw/gpio"
+  "log"
 )
 
 var uTime = flag.Int("utime", 20, "Number of seconds to unlock on successful swipe")
