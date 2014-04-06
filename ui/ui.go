@@ -2,24 +2,22 @@ package ui
 
 import (
 	"net/http"
-  "flag"
   "vnw/config"
-  "vnw/config"
+  "vnw/core"
   "html/template"
   "fmt"
   "log"
 )
 
-var httplistener = flag.String("port", ":80", "Listen Address for webserver")
-
-func init() {
-  flag.Parse()
-}
+var Httplistener string
 
 func Start() {
   http.HandleFunc("/cards", listCards)
   http.HandleFunc("/status", statuss)
-  http.ListenAndServe(*httplistener, nil)
+  err := http.ListenAndServe(Httplistener, nil)
+  if err != nil {
+    log.Fatal("Failed to create server!", err)
+  }
 }
 
 func listCards(w http.ResponseWriter, r *http.Request) {

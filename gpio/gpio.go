@@ -9,12 +9,12 @@ import (
 )
 
 var fpin = flag.Int("gpiopin", 60, "GPIO Pin to use")
+var Gpiodir string
 var pin int
 
-func init() {
-	flag.Parse()
+func Setup() {
 	pin = *fpin
-	f, err := os.OpenFile("/sys/class/gpio/export", os.O_WRONLY, 0)
+	f, err := os.OpenFile(Gpiodir + "/export", os.O_WRONLY, 0)
 	if err != nil {
 		log.Fatal("Could not open GPIO exports file!", err)
 	}
@@ -22,7 +22,7 @@ func init() {
 }
 
 func open() *os.File {
-	f, err := os.Create("/sys/class/gpio/gpio" + strconv.Itoa(pin) + "/direction")
+	f, err := os.Create(Gpiodir + "/gpio" + strconv.Itoa(pin) + "/direction")
 	if err != nil {
 		log.Fatal("Could not manipulate GPIO pin "+strconv.Itoa(pin), err)
 	}
@@ -48,7 +48,7 @@ func Lock() {
 }
 
 func Value() bool {
-	f, err := os.Open("/sys/class/gpio/gpio" + strconv.Itoa(pin) + "/value")
+	f, err := os.Open(Gpiodir + "/gpio" + strconv.Itoa(pin) + "/value")
 	if err != nil {
 		log.Fatal("Could not manipulate GPIO pin "+strconv.Itoa(pin), err)
 	}
