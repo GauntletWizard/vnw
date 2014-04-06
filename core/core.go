@@ -10,7 +10,7 @@ import (
 	"vnw/gpio"
 )
 
-var uTime = flag.Int("utime", 20, "Number of seconds to unlock on successful swipe")
+var uTime = flag.Int("utime", 10, "Number of seconds to unlock on successful swipe")
 
 var Failed map[string]bool
 var doorTimer *time.Timer

@@ -73,13 +73,25 @@ func Start() {
 }
 
 func loadMembers(fname string) (l Cardlist) {
+	log.Print("Opening Database: ", fname)
 	f, err := os.Open(fname)
 	if err != nil {
-		log.Println("Failed to read from file ", fname)
+		log.Print("Failed to read from file ", fname)
 		return nil
 	}
 	csvReader := csv.NewReader(f)
-	for read, err := csvReader.Read(); err == nil; read, err = csvReader.Read() {
+	csvReader.FieldsPerRecord = -1
+	csvReader.LazyQuotes = true
+	csvReader.TrimLeadingSpace = true
+	log.Print("CSV Reader:", csvReader)
+	read, err := csvReader.Read()
+	log.Print(err)
+	l = make(Cardlist, 100)
+	for ; err == nil; read, err = csvReader.Read() {
+		if err != nil {
+			log.Fatal("Failed to read record:", err)
+		}
+		log.Print(read)
 		id, err := strconv.Atoi(read[1])
 		if err != nil {
 			log.Fatal("Bad Member ID ", read[1])
@@ -87,8 +99,11 @@ func loadMembers(fname string) (l Cardlist) {
 		m := Member{Name: read[0],
 			Id: id}
 		m.IdCards = append([]string{}, read[2:]...)
-		l[m.Name] = &m
+		for _, i := range m.IdCards {
+			l[i] = &m
+		}
 	}
+	log.Print(err)
 	return
 }
 
@@ -101,6 +116,7 @@ func validateCardlist(l *Cardlist) bool {
 	ted := false
 	// Check that the owners are in the DB
 	for _, m := range *l {
+		log.Print("Member:", m)
 		switch m.Name {
 		case "Ted Hahn":
 			ted = true
