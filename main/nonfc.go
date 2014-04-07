@@ -6,12 +6,15 @@ import (
 	//	"vnw/nfc"
 	"flag"
 	"fmt"
+	"os/user"
+	"vnw/core"
 	"vnw/ui"
 )
 
 func init() {
-	flag.StringVar(&ui.Httplistener, "port", ":80", "Listen Address for webserver")
-	flag.StringVar(&gpio.Gpiodir, "gpiodir", "/sys/class/gpio", "Directory that holds GPIO pins. Exported for testing.")
+	flag.StringVar(&ui.Httplistener, "port", ":8080", "Listen Address for webserver")
+	u, _ := user.Current()
+	flag.StringVar(&gpio.Gpiodir, "gpiodir", u.HomeDir+"/gpio", "Directory that holds GPIO pins. Exported for testing.")
 	fmt.Println("Log message")
 }
 
@@ -21,6 +24,7 @@ func main() {
 	fmt.Println("Starting config")
 	config.Start()
 	//	nfc.Poll()
+	core.Start()
 	fmt.Println("Starting UI Server")
 	ui.Start()
 	fmt.Println("Shouldn't reach this")

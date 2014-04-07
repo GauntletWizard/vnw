@@ -3,14 +3,13 @@ package core
 //Core logic for Unlocking
 
 import (
-	"flag"
 	"log"
 	"time"
 	"vnw/config"
 	"vnw/gpio"
 )
 
-var uTime = flag.Int("utime", 10, "Number of seconds to unlock on successful swipe")
+var UTime int
 
 var Failed map[string]bool
 var doorTimer *time.Timer
@@ -55,7 +54,7 @@ func ForceLock() {
 func Unlock() {
 	doorState = true
 	Eval()
-	doorTimer.Reset(time.Second * time.Duration(*uTime))
+	doorTimer.Reset(time.Second * time.Duration(UTime))
 }
 
 func Lock() {
