@@ -13,7 +13,9 @@ import (
 
 var file = flag.String("dbfile", "foo.csv", "location to read/store the user database")
 var reqpath = flag.String("reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
-var sleep = flag.Int("sleeptime", 10, "Number of seconds between updates of configfile")
+var Sleep int
+
+//= flag.Int("sleeptime", 600, "Number of seconds between updates of configfile")
 
 const tmpext = ".tmp"
 
@@ -26,10 +28,12 @@ type Member struct {
 type Cardlist map[string]*Member
 
 var Cards *Cardlist
+var update chan time.Time
 
 func init() {
 	c := make(Cardlist)
 	Cards = &c
+	update = make(chan time.Time, 0)
 }
 
 func Start() {
@@ -39,6 +43,7 @@ func Start() {
 	tmpfile := *file + tmpext
 	cards := loadMembers(*file)
 	Cards = &cards
+	timer := time.Tick(time.Duration(Sleep) * time.Second)
 	go func() {
 		for {
 			resp, err := c.Get(*reqpath)
@@ -67,9 +72,17 @@ func Start() {
 			} else {
 				log.Print("Failed to get config from server: ", err, resp.StatusCode)
 			}
-			time.Sleep(time.Duration(*sleep) * time.Second)
+			select {
+			case <-timer:
+			case <-update:
+				log.Print("Update requested!")
+			}
 		}
 	}()
+}
+
+func Update() {
+	update <- time.Now()
 }
 
 func loadMembers(fname string) (l Cardlist) {

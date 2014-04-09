@@ -15,6 +15,7 @@ func init() {
 	flag.StringVar(&ui.Httplistener, "port", ":8080", "Listen Address for webserver")
 	u, _ := user.Current()
 	flag.StringVar(&gpio.Gpiodir, "gpiodir", u.HomeDir+"/gpio", "Directory that holds GPIO pins. Exported for testing.")
+	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
 	fmt.Println("Log message")
 }
 
