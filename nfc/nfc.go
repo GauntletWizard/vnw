@@ -49,7 +49,7 @@ func Poll() {
 		//log.Print(i)
 		if len(i) > 0 {
 			for j := range i {
-				core.Auth(i[j])
+				core.Auth <- i[j]
 			}
 			time.Sleep(time.Millisecond * time.Duration(*nfcwait))
 		} else {

@@ -11,6 +11,7 @@ import (
 
 var UTime int
 
+var Auth chan<- string
 var Failed map[string]bool
 var doorTimer *time.Timer
 var doorState bool
@@ -23,22 +24,27 @@ func Start() {
 	Clear()
 	doorState = false
 	doorTimer = time.AfterFunc(time.Duration(0), Lock)
+  a := make(chan string, 0)
+  go auth(a)
+  Auth = a
 }
 
 func Clear() {
 	Failed = make(map[string]bool, 10)
 }
 
-func Auth(id string) {
-	m := (*config.Cards)[id]
-	log.Print("Saw card: ", id)
-	log.Print("Mapped to member: ", m)
-	if m != nil {
-		m.Log(id)
-		Unlock()
-	} else {
-		Failed[id] = true
-	}
+func auth(a <-chan string) {
+  for id := <-a; ; id = <-a {
+    m := (*config.Cards)[id]
+    log.Print("Saw card: ", id)
+    log.Print("Mapped to member: ", m)
+    if m != nil {
+      m.Log(id)
+      Unlock()
+    } else {
+      Failed[id] = true
+    }
+  }
 }
 
 func ForceUnlock() {

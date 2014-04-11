@@ -58,7 +58,7 @@ func statuss(w http.ResponseWriter, r *http.Request) {
 func testcard(w http.ResponseWriter, r *http.Request) {
 	r.ParseForm()
 	for _, c := range r.Form["cardid"] {
-		core.Auth(c)
+		core.Auth <- c
 	}
 	w.Header().Add("Location", "/status")
 	w.WriteHeader(303)
