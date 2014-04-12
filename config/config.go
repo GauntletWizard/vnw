@@ -8,6 +8,7 @@ import (
 	"net/http"
 	"os"
 	"strconv"
+  "strings"
 	"time"
 )
 
@@ -28,6 +29,7 @@ type Member struct {
 type Cardlist map[string]*Member
 
 var Cards *Cardlist
+var Secret string
 var update chan time.Time
 
 func init() {
@@ -35,6 +37,8 @@ func init() {
 	Cards = &c
 	update = make(chan time.Time, 0)
 }
+
+
 
 func Start() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -46,7 +50,7 @@ func Start() {
 	timer := time.Tick(time.Duration(Sleep) * time.Second)
 	go func() {
 		for {
-			resp, err := c.Get(*reqpath)
+			resp, err := c.Post(*reqpath, "", strings.NewReader(Secret))
 			if (err == nil) && (resp.StatusCode == 200) {
 				log.Print("Got config from server")
 				// Write response to file

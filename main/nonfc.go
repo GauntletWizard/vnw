@@ -16,6 +16,7 @@ func init() {
 	u, _ := user.Current()
 	flag.StringVar(&gpio.Gpiodir, "gpiodir", u.HomeDir+"/gpio", "Directory that holds GPIO pins. Exported for testing.")
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
+	flag.StringVar(&config.Secret, "secret", "", "Shared secret for grabbing member database.")
 	fmt.Println("Log message")
 }
 
