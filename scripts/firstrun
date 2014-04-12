@@ -1,0 +1,25 @@
+#!/bin/bash
+# Firstrun setup for Raspberry Pi. Copied to /etc/init.d/firstrun
+### BEGIN INIT INFO
+# Provides:          firstrun
+# Required-Start:    
+# Required-Stop:     
+# Default-Start:     2 3 4 5
+# Default-Stop:
+### END INIT INFO
+
+LIBNFCDIR=/home/pi/libnfc-1.7.1
+MAINDIR=/home/pi/src/vnw/main
+GOPATH=/home/pi/
+if [ ! -e /var/opt/vnw-run ]
+then
+	apt-get install libusb-dev daemontools vim
+	cd $LIBNFCDIR
+	$LIBNFCDIR/configure
+	make
+	make install
+	cd $MAINDIR
+	GOPATH=$GOPATH go build main.go
+	cp main /bin/
+  touch /var/opt/vnw-run
+fi
