@@ -2,18 +2,20 @@ package config
 
 import (
 	"encoding/csv"
-	"flag"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
+  "strings"
 	"time"
 )
 
-var file = flag.String("dbfile", "foo.csv", "location to read/store the user database")
-var reqpath = flag.String("reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
-var sleep = flag.Int("sleeptime", 10, "Number of seconds between updates of configfile")
+var File string
+var Reqpath string
+var Sleep int
+
+//= flag.Int("sleeptime", 600, "Number of seconds between updates of configfile")
 
 const tmpext = ".tmp"
 
@@ -26,22 +28,28 @@ type Member struct {
 type Cardlist map[string]*Member
 
 var Cards *Cardlist
+var Secret string
+var update chan time.Time
 
 func init() {
 	c := make(Cardlist)
 	Cards = &c
+	update = make(chan time.Time, 0)
 }
+
+
 
 func Start() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
-	log.Print("Opening file ", *file, " for config database")
+	log.Print("Opening file ", File, " for config database")
 	var c http.Client
-	tmpfile := *file + tmpext
-	cards := loadMembers(*file)
+	tmpfile := File + tmpext
+	cards := loadMembers(File)
 	Cards = &cards
+	timer := time.Tick(time.Duration(Sleep) * time.Second)
 	go func() {
 		for {
-			resp, err := c.Get(*reqpath)
+			resp, err := c.Post(Reqpath, "", strings.NewReader(Secret))
 			if (err == nil) && (resp.StatusCode == 200) {
 				log.Print("Got config from server")
 				// Write response to file
@@ -56,9 +64,9 @@ func Start() {
 				list := loadMembers(tmpfile)
 				if validateCardlist(&list) {
 					Cards = &list
-					os.Remove(*file)
+					os.Remove(File)
 					log.Print("Updating config file")
-					os.Link(tmpfile, *file)
+					os.Link(tmpfile, File)
 					os.Remove(tmpfile)
 				} else {
 					log.Print("Config failed to validate!")
@@ -67,9 +75,17 @@ func Start() {
 			} else {
 				log.Print("Failed to get config from server: ", err, resp.StatusCode)
 			}
-			time.Sleep(time.Duration(*sleep) * time.Second)
+			select {
+			case <-timer:
+			case <-update:
+				log.Print("Update requested!")
+			}
 		}
 	}()
+}
+
+func Update() {
+	update <- time.Now()
 }
 
 func loadMembers(fname string) (l Cardlist) {
