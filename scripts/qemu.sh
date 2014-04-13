@@ -1,7 +1,8 @@
 PIFILE=/home/ted/pi/workspace/2014-01-07-wheezy-raspbian.img
 PIMNT=/home/ted/pi/workspace/pimnt
 LOOPDEV=`losetup -f`
-VNW=/home/ted/code/vnw
+VNW=/home/ted/src/vnw
+PIMNT=/
 
 pimount()
 {
@@ -37,7 +38,7 @@ piumount
 
 vnw ()
 {
-pimount
+# pimount
 #Stuff to build and deploy master program.
 cp ~/dev/libnfc-1.7.1.tar.bz2 $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
@@ -51,7 +52,7 @@ install $VNW/scripts/firstrun $PIMNT/etc/init.d/
 ln -s /etc/init.d/firstrun $PIMNT/etc/rc2.d/S90firstrun
 install -d $PIMNT/service/
 install -o ted $VNW/scripts/run $PIMNT/service/main/run
-piumount
+#piumount
 # This is close, but not necessarially right. cigar; hrmm.
 # truncate -s 4008706048
 }

@@ -20,6 +20,7 @@ var fLock bool
 var flTimer time.Time
 var fUnlock bool
 
+
 func Start() {
 	Clear()
 	doorState = false
@@ -60,6 +61,8 @@ func ForceLock() {
 func Unlock() {
 	doorState = true
 	Eval()
+//	doorTimer.Stop()
+//	doorTimer = time.AfterFunc(time.Duration(time.Second * time.Duration(UTime)), Lock)
 	doorTimer.Reset(time.Second * time.Duration(UTime))
 }
 
