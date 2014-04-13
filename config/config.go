@@ -1,19 +1,22 @@
 package config
 
 import (
+	"bytes"
 	"encoding/csv"
 	"io"
 	"log"
 	"net/http"
 	"os"
 	"strconv"
-  "strings"
 	"time"
 )
 
-var File string
-var Reqpath string
-var Sleep int
+var (
+	File    string
+	Reqpath string
+	Sleep   int
+	Secret  []byte
+)
 
 //= flag.Int("sleeptime", 600, "Number of seconds between updates of configfile")
 
@@ -28,7 +31,6 @@ type Member struct {
 type Cardlist map[string]*Member
 
 var Cards *Cardlist
-var Secret string
 var update chan time.Time
 
 func init() {
@@ -36,8 +38,6 @@ func init() {
 	Cards = &c
 	update = make(chan time.Time, 0)
 }
-
-
 
 func Start() {
 	log.SetFlags(log.LstdFlags | log.Lshortfile)
@@ -49,7 +49,7 @@ func Start() {
 	timer := time.Tick(time.Duration(Sleep) * time.Second)
 	go func() {
 		for {
-			resp, err := c.Post(Reqpath, "", strings.NewReader(Secret))
+			resp, err := c.Post(Reqpath, "text/plain", bytes.NewReader(Secret))
 			if (err == nil) && (resp.StatusCode == 200) {
 				log.Print("Got config from server")
 				// Write response to file
@@ -72,8 +72,10 @@ func Start() {
 					log.Print("Config failed to validate!")
 				}
 
+			} else if err != nil {
+				log.Print("Failed to get config from server: ", err)
 			} else {
-				log.Print("Failed to get config from server: ", err, resp.StatusCode)
+				log.Print("Received error reading config from server: ", resp.StatusCode)
 			}
 			select {
 			case <-timer:

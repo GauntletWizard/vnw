@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"io/ioutil"
 	"log"
 	"os"
 	"syscall"
@@ -15,7 +16,10 @@ import (
 
 func init() {}
 
-var logf string
+var (
+	logf = flag.String("log", "-", "File to output logging to. Defaults to Stdout")
+	secretFile = flag.String("secretfile", "", "Shared secret for grabbing member database.")
+)
 
 func main() {
 	flag.StringVar(&ui.Httplistener, "port", ":80", "Listen Address for webserver")
@@ -25,10 +29,16 @@ func main() {
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
 	flag.StringVar(&config.File, "dbfile", "foo.csv", "location to read/store the user database")
 	flag.StringVar(&config.Reqpath, "reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
-	flag.StringVar(&config.Secret, "secret", "", "Shared secret for grabbing member database.")
-	flag.StringVar(&logf, "log", "-", "File to output logging to. Defaults to Stdout")
-	log.Print("Log message")
 	flag.Parse()
+
+	if *secretFile != "" {
+		var err error
+		config.Secret, err = ioutil.ReadFile(*secretFile)
+		if err != nil {
+			log.Fatal("Unable to load secret file: ", err)
+		}
+	}
+
 	log.Print(gpio.Pin)
 	gpio.Setup()
 
@@ -48,10 +58,10 @@ func main() {
 func handleHup(c <-chan os.Signal) {
 	for {
 		var file *os.File
-		if logf == "-" {
+		if *logf == "-" {
 			file = os.Stdout
 		} else {
-			file, _ = os.Create(logf)
+			file, _ = os.Create(*logf)
 		}
 		log.SetOutput(file)
 		<-c
