@@ -5,8 +5,8 @@ import (
 	"io/ioutil"
 	"log"
 	"os"
-	"syscall"
 	"os/signal"
+	"syscall"
 	"vnw/config"
 	"vnw/core"
 	"vnw/gpio"
@@ -17,7 +17,7 @@ import (
 func init() {}
 
 var (
-	logf = flag.String("log", "-", "File to output logging to. Defaults to Stdout")
+	logf       = flag.String("log", "-", "File to output logging to. Defaults to Stdout")
 	secretFile = flag.String("secretfile", "", "Shared secret for grabbing member database.")
 )
 
@@ -30,6 +30,7 @@ func main() {
 	flag.StringVar(&config.File, "dbfile", "foo.csv", "location to read/store the user database")
 	flag.StringVar(&config.Reqpath, "reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
 	flag.Parse()
+	setLog()
 
 	if *secretFile != "" {
 		var err error
@@ -49,21 +50,24 @@ func main() {
 	go nfc.Poll()
 	log.Println("Starting UI Server")
 	c := make(chan os.Signal, 0)
-	go handleHup(c)
+	go func() {
+		<-c
+		setLog()
+	}()
 	signal.Notify(c, os.Signal(syscall.SIGHUP))
 	ui.Start()
 	log.Println("Shouldn't reach this")
 }
 
-func handleHup(c <-chan os.Signal) {
-	for {
-		var file *os.File
-		if *logf == "-" {
-			file = os.Stdout
-		} else {
-			file, _ = os.Create(*logf)
-		}
-		log.SetOutput(file)
-		<-c
+func setLog() {
+	var file *os.File
+	if *logf == "" {
+		return
 	}
+	if *logf == "-" {
+		file = os.Stdout
+	} else {
+		file, _ = os.Create(*logf)
+	}
+	log.SetOutput(file)
 }
