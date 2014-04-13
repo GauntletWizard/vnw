@@ -21,5 +21,8 @@ then
 	cd $MAINDIR
 	GOPATH=$GOPATH go build main.go
 	cp main /bin/
+  install scripts/lock /bin/
+  install scripts/unlock /bin/
+  echo $'0\t0\t*\t*\t*\troot\t/bin/lock' >> /etc/crontab
   touch /var/opt/vnw-run
 fi
