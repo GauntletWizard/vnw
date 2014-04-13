@@ -3,6 +3,9 @@ package main
 import (
 	"flag"
 	"log"
+	"os"
+	"syscall"
+	"os/signal"
 	"vnw/config"
 	"vnw/core"
 	"vnw/gpio"
@@ -11,6 +14,8 @@ import (
 )
 
 func init() {}
+
+var logf string
 
 func main() {
 	flag.StringVar(&ui.Httplistener, "port", ":80", "Listen Address for webserver")
@@ -21,6 +26,7 @@ func main() {
 	flag.StringVar(&config.File, "dbfile", "foo.csv", "location to read/store the user database")
 	flag.StringVar(&config.Reqpath, "reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
 	flag.StringVar(&config.Secret, "secret", "", "Shared secret for grabbing member database.")
+	flag.StringVar(&logf, "log", "-", "File to output logging to. Defaults to Stdout")
 	log.Print("Log message")
 	flag.Parse()
 	log.Print(gpio.Pin)
@@ -32,6 +38,22 @@ func main() {
 	nfc.Start()
 	go nfc.Poll()
 	log.Println("Starting UI Server")
+	c := make(chan os.Signal, 0)
+	go handleHup(c)
+	signal.Notify(c, os.Signal(syscall.SIGHUP))
 	ui.Start()
 	log.Println("Shouldn't reach this")
+}
+
+func handleHup(c <-chan os.Signal) {
+	for {
+		var file *os.File
+		if logf == "-" {
+			file = os.Stdout
+		} else {
+			file, _ = os.Create(logf)
+		}
+		log.SetOutput(file)
+		<-c
+	}
 }
