@@ -13,16 +13,23 @@ MAINDIR=/home/pi/src/vnw/main
 GOPATH=/home/pi/
 if [ ! -e /var/opt/vnw-run ]
 then
+  # Install our deps
 	apt-get install libusb-dev daemontools vim
 	cd $LIBNFCDIR
 	$LIBNFCDIR/configure
 	make
 	make install
+  # Install our main program
 	cd $MAINDIR
 	GOPATH=$GOPATH go build main.go
 	cp main /bin/
   install scripts/lock /bin/
   install scripts/unlock /bin/
+  
+  # Scripts to make things run.
+  echo "America/Los_Angeles" > /etc/timezone
+  dpkg-reconfigure --frontend noninteractive tzdata
+  # This is about the only non-idempotent thing in here.
   echo $'0\t0\t*\t*\t*\troot\t/bin/lock' >> /etc/crontab
   touch /var/opt/vnw-run
 fi
