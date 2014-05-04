@@ -74,6 +74,8 @@ echo '        id_str="work"' >> $WPA
 echo '        priority=5' >> $WPA
 echo '}' >> $WPA
 
+install -o ted $VNW/scripts/run $PIMNT/service/main/run
+install logrotate $PIMNT/etc/logrotate.d/main
 # Clear state.
 rm $VNW/var/opt/vnw-run
 piumount

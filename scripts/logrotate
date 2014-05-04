@@ -1,0 +1,8 @@
+/service/main/door.log {
+  rotate 60
+  daily
+  missingok
+  postrotate
+      /usr/bin/killall -HUP main
+  endscript
+}
