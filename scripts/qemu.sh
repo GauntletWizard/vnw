@@ -49,6 +49,7 @@ cp -r $GO $PIMNT/home/pi/
 cp $LIBNFC $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
 tar -xf libnfc.tar.bz2
+
 # Copy over main function
 install -o ted -d $PIMNT/home/pi/src/
 cp -r $VNW $PIMNT/home/pi/src/
@@ -58,24 +59,15 @@ install $VNW/scripts/firstrun $PIMNT/etc/init.d/
 ln -s /etc/init.d/firstrun $PIMNT/etc/rc2.d/S90firstrun
 install -d $PIMNT/service/
 install -o ted -D $VNW/scripts/run $PIMNT/service/main/run
-# Set up wireless connection
-echo "network={" >> $WPA
-echo '        ssid="VnW"' >> $WPA
-echo '       scan_ssid=1' >> $WPA
-echo '       psk=verneandwelcome' >> $WPA
-echo '        id_str="work"' >> $WPA
-echo '        priority=5' >> $WPA
-echo '}' >> $WPA
-echo "network={" >> $WPA
-echo '        ssid="VnW"' >> $WPA
-echo '       scan_ssid=1' >> $WPA
-echo '       psk=verneandwelcome' >> $WPA
-echo '        id_str="work"' >> $WPA
-echo '        priority=5' >> $WPA
-echo '}' >> $WPA
 
+# Set up secrets
+install -o ted $VNW/secrets/secretfile $PIMNT/home/pi/
+cat $VNW/secrets/wpa >> $WPA
+
+# Make things run.
 install -o ted $VNW/scripts/run $PIMNT/service/main/run
 install logrotate $PIMNT/etc/logrotate.d/main
+
 # Clear state.
 rm $VNW/var/opt/vnw-run
 piumount

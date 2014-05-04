@@ -42,4 +42,6 @@ then
   touch $SEMAPHORE
 fi
 
+# Start our program.
+svscanboot &
 exit 0
