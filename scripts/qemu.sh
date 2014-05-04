@@ -1,8 +1,10 @@
-PIFILE=/home/ted/pi/workspace/2014-01-07-wheezy-raspbian.img
-PIMNT=/home/ted/pi/workspace/pimnt
+PIFILE=/home/ted/pi/2014-01-07-wheezy-raspbian.img
+PIMNT=/home/ted/pi/pimnt
 LOOPDEV=`losetup -f`
-VNW=/home/ted/src/vnw
-PIMNT=/
+VNW=/home/ted/code/vnw
+GO=/home/ted/dev/go
+LIBNFC=/home/ted/dev/libnfc-1.7.1.tar.bz2
+WPA=$PIMNT/etc/wpa_supplicant/wpa_supplicant.conf
 
 pimount()
 {
@@ -13,6 +15,9 @@ mount ${LOOPDEV}p2 $PIMNT
 
 piumount()
 {
+cd /
+sync
+sleep 1
 umount $PIMNT
 losetup -d `losetup -a |grep $PIFILE |cut -d: -f1`
 }
@@ -38,20 +43,37 @@ piumount
 
 vnw ()
 {
-# pimount
+pimount
 #Stuff to build and deploy master program.
-cp ~/dev/libnfc-1.7.1.tar.bz2 $PIMNT/home/pi/libnfc.tar.bz2
+cp -r $GO $PIMNT/home/pi/
+cp $LIBNFC $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
 tar -xf libnfc.tar.bz2
 # Copy over main function
-mkdir -p $PIMNT/home/pi/src/
-install -D -o ted $VNW $PIMNT/home/pi/src/
+install -o ted -d $PIMNT/home/pi/src/
+cp -r $VNW $PIMNT/home/pi/src/
 
 # Copy important scripts
 install $VNW/scripts/firstrun $PIMNT/etc/init.d/
 ln -s /etc/init.d/firstrun $PIMNT/etc/rc2.d/S90firstrun
 install -d $PIMNT/service/
-install -o ted $VNW/scripts/run $PIMNT/service/main/run
+install -o ted -D $VNW/scripts/run $PIMNT/service/main/run
+# Set up wireless connection
+echo "network={" >> $WPA
+echo '        ssid="VnW"' >> $WPA
+echo '       scan_ssid=1' >> $WPA
+echo '       psk=verneandwelcome' >> $WPA
+echo '        id_str="work"' >> $WPA
+echo '        priority=5' >> $WPA
+echo '}' >> $WPA
+echo "network={" >> $WPA
+echo '        ssid="VnW"' >> $WPA
+echo '       scan_ssid=1' >> $WPA
+echo '       psk=verneandwelcome' >> $WPA
+echo '        id_str="work"' >> $WPA
+echo '        priority=5' >> $WPA
+echo '}' >> $WPA
+
 # Clear state.
 rm $VNW/var/opt/vnw-run
 piumount
@@ -59,4 +81,11 @@ piumount
 # truncate -s 4008706048
 }
 
-pimount
+case $1 in
+	pimnt|pimount) pimount ;;
+	piumnt|piumount) piumount ;;
+	mkemu) mkemu ;;
+	mkdreal) mkreal ;;
+	vnw) vnw ;;
+	*) vnw ; mkemu ;;
+esac
