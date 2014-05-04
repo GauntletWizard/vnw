@@ -16,8 +16,9 @@ SEMAPHORE=/var/opt/vnw-run
 if [ ! -f $SEMAPHORE ]
 then
   # Install our deps
-	apt-get update
-	apt-get install libusb-dev daemontools vim bzr golang
+	apt-get -q -y update
+	export DEBIAN_FRONTEND=noninteractive
+	apt-get -q -y install libusb-dev daemontools vim bzr
 	# Install libnfc
 	cd $LIBNFCDIR
 	$LIBNFCDIR/configure
@@ -39,6 +40,7 @@ then
   # This is about the only non-idempotent thing in here.
   echo $'0\t0\t*\t*\t*\troot\t/bin/lock' >> /etc/crontab
 	echo "export GOPATH=/home/pi/" >> /home/pi/.bashrc
+	echo "alias go=$GODIR/bin/go" >> /home/pi/.bashrc
   touch $SEMAPHORE
 fi
 
