@@ -1,3 +1,4 @@
+#!/bin/bash
 PIFILE=/home/ted/pi/2014-01-07-wheezy-raspbian.img
 PIMNT=/home/ted/pi/pimnt
 LOOPDEV=`losetup -f`
@@ -5,6 +6,13 @@ VNW=/home/ted/code/vnw
 GO=/home/ted/dev/go
 LIBNFC=/home/ted/dev/libnfc-1.7.1.tar.bz2
 WPA=$PIMNT/etc/wpa_supplicant/wpa_supplicant.conf
+
+if [ "$EUID" -ne 0 ];
+then
+	echo "Must be run as root"
+	exit 1
+fi
+
 
 pimount()
 {
@@ -55,8 +63,7 @@ install -o ted -d $PIMNT/home/pi/src/
 cp -r $VNW $PIMNT/home/pi/src/
 
 # Copy important scripts
-install $VNW/scripts/firstrun $PIMNT/etc/init.d/
-ln -s /etc/init.d/firstrun $PIMNT/etc/rc2.d/S90firstrun
+install $VNW/scripts/firstrun $PIMNT/etc/rc.local
 install -d $PIMNT/service/
 install -o ted -D $VNW/scripts/run $PIMNT/service/main/run
 
@@ -66,7 +73,7 @@ cat $VNW/secrets/wpa >> $WPA
 
 # Make things run.
 install -o ted $VNW/scripts/run $PIMNT/service/main/run
-install logrotate $PIMNT/etc/logrotate.d/main
+install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
 
 # Clear state.
 rm $VNW/var/opt/vnw-run
