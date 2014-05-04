@@ -2,6 +2,8 @@ PIFILE=/home/ted/pi/2014-01-07-wheezy-raspbian.img
 PIMNT=/home/ted/pi/pimnt
 LOOPDEV=`losetup -f`
 VNW=/home/ted/code/vnw
+GO=/home/ted/dev/go
+LIBNFC=/home/ted/dev/libnfc-1.7.1.tar.bz2
 
 pimount()
 {
@@ -42,16 +44,18 @@ vnw ()
 {
 pimount
 #Stuff to build and deploy master program.
-cp ~/dev/libnfc-1.7.1.tar.bz2 $PIMNT/home/pi/libnfc.tar.bz2
+cp -r $GO $PIMNT/home/pi/
+cp $LIBNFC $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
 tar -xf libnfc.tar.bz2
 # Copy over main function
-mkdir -p $PIMNT/home/pi/src/
-install -d -o ted $VNW $PIMNT/home/pi/src/
+install -o ted -d $PIMNT/home/pi/src/
+cp -r $VNW $PIMNT/home/pi/src/
+cp -r 
 
 # Copy important scripts
-install $VNW/scripts/firstrun $PIMNT/etc/init.d/vnwfirstrun
-ln -s /etc/init.d/vnwfirstrun $PIMNT/etc/rc2.d/S90firstrun
+install $VNW/scripts/firstrun $PIMNT/etc/init.d/
+ln -s /etc/init.d/firstrun $PIMNT/etc/rc2.d/S90firstrun
 install -d $PIMNT/service/
 install -o ted -D $VNW/scripts/run $PIMNT/service/main/run
 # Clear state.

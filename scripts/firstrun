@@ -1,29 +1,39 @@
 #!/bin/bash
 # Firstrun setup for Raspberry Pi. Copied to /etc/init.d/firstrun
 ### BEGIN INIT INFO
-# Provides:          firstrun
+# Provides:          vnwfirstrun
 # Required-Start:    
 # Required-Stop:     
 # Default-Start:     2 3 4 5
 # Default-Stop:
 ### END INIT INFO
 
-LIBNFCDIR=/home/pi/libnfc-1.7.1
-MAINDIR=/home/pi/src/vnw/main
+LIBNFCDIR=/home/pi/libnfc-1.7.1/
+MAINDIR=/home/pi/src/vnw/main/
+GODIR=/home/pi/go/
 GOPATH=/home/pi/
 SEMAPHORE=/var/opt/vnw-run
 if [ ! -f $SEMAPHORE ]
 then
-	apt-get install libusb-dev daemontools vim
+	apt-get update
+	apt-get install libusb-dev daemontools vim bzr golang
+	# Install libnfc
 	cd $LIBNFCDIR
 	$LIBNFCDIR/configure
 	make
 	make install
+	# Make a custom go
+	cd $GODIR/src/
+	./make.bash
+	# Make and install our main program.
 	cd $MAINDIR
-	GOPATH=$GOPATH go build main.go
-	cp main /bin/
+	GOPATH=$GOPATH $GODIR/bin/go build main.go
+	install main /bin/
   install scripts/lock /bin/
   install scripts/unlock /bin/
   echo $'0\t0\t*\t*\t*\troot\t/bin/lock' >> /etc/crontab
+	echo "export GOPATH=/home/pi/" >> /home/pi/.bashrc
   touch $SEMAPHORE
 fi
+
+exit 0
