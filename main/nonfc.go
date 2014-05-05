@@ -19,7 +19,7 @@ func init() {
 	flag.StringVar(&config.Reqpath, "reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
 	flag.StringVar(&config.Secret, "secret", "", "Shared secret for grabbing member database.")
-	flag.StringVar(_, "log", "", "Logfile. Inactive.")
+	_ = flag.String("log", "", "Logfile. Inactive.")
 	fmt.Println("Log message")
 }
 
