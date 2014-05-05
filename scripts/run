@@ -1,2 +1,2 @@
 #!/bin/bash
-main --port 8080 -log door.log
+main --port :8080 -log door.log
