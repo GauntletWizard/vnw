@@ -61,11 +61,13 @@ tar -xf libnfc.tar.bz2
 # Copy over main function
 install -o ted -d $PIMNT/home/pi/src/
 cp -r $VNW $PIMNT/home/pi/src/
+chown -R ted:ted $PIMNT/home/pi/src/
 
 # Copy important scripts
 install $VNW/scripts/firstrun $PIMNT/etc/rc.local
 install -d $PIMNT/service/
 install -o ted -D $VNW/scripts/run $PIMNT/service/main/run
+rm $PIMNT/etc/init.d/mathkernel
 
 # Set up secrets
 install -o ted $VNW/secrets/secretfile $PIMNT/home/pi/

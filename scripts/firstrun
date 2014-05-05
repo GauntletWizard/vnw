@@ -18,18 +18,20 @@ then
   # Install our deps
 	apt-get -q -y update
 	export DEBIAN_FRONTEND=noninteractive
-	apt-get -q -y install libusb-dev daemontools vim bzr
+	apt-get -q -y install libusb-dev daemontools vim bzr mercurial
 	# Install libnfc
 	cd $LIBNFCDIR
 	$LIBNFCDIR/configure
 	make
 	make install
+	ldconfig
 	# Make a custom go
 	cd $GODIR/src/
 	./make.bash
 	# Make and install our main program.
 	cd $MAINDIR
 	GOPATH=$GOPATH $GODIR/bin/go build main.go
+	GOPATH=$GOPATH $GODIR/bin/go build nonfc.go
 	install main /bin/
   install scripts/lock /bin/
   install scripts/unlock /bin/
