@@ -18,7 +18,7 @@ then
   # Install our deps
 	apt-get -q -y update
 	export DEBIAN_FRONTEND=noninteractive
-	apt-get -q -y install libusb-dev daemontools vim bzr mercurial
+	apt-get -q -y install libusb-dev daemontools vim bzr mercurial wicd-cli tmux unattended-upgrades
 	# Install libnfc
 	cd $LIBNFCDIR
 	$LIBNFCDIR/configure
@@ -40,6 +40,7 @@ then
   echo "America/Los_Angeles" > /etc/timezone
   dpkg-reconfigure --frontend noninteractive tzdata
   # This is about the only non-idempotent thing in here.
+	echo "use_settings_globally = 1" >> /etc/wicd/manager-settings.conf
   echo $'0\t0\t*\t*\t*\troot\t/bin/lock' >> /etc/crontab
 	echo "export GOPATH=/home/pi/" >> /home/pi/.bashrc
 	echo "alias go=$GODIR/bin/go" >> /home/pi/.bashrc

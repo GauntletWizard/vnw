@@ -4,6 +4,7 @@ PIMNT=/home/ted/pi/pimnt
 LOOPDEV=`losetup -f`
 VNW=/home/ted/code/vnw
 GO=/home/ted/dev/go
+WIRELESS=/home/ted/dev/rpi-wireless
 LIBNFC=/home/ted/dev/libnfc-1.7.1.tar.bz2
 WPA=$PIMNT/etc/wpa_supplicant/wpa_supplicant.conf
 
@@ -58,6 +59,11 @@ cp $LIBNFC $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
 tar -xf libnfc.tar.bz2
 
+# Drivers
+KERNEL=3.10.25+
+install -p -m 644 $WIRELESS/8188eu.ko $PIMNT/lib/modules/$KERNEL/kernel/drivers/net/wireless
+install -D -p -m 644 $WIRELESS/rtl8188eufw.bin $PIMNT/lib/firmware/rtlwifi/rtl8188eufw.bin
+
 # Copy over main function
 install -o ted -d $PIMNT/home/pi/src/
 cp -r $VNW $PIMNT/home/pi/src/
@@ -65,13 +71,13 @@ chown -R ted:ted $PIMNT/home/pi/src/
 
 # Copy important scripts
 install $VNW/scripts/firstrun $PIMNT/etc/rc.local
-install -d $PIMNT/service/
-install -o ted -D $VNW/scripts/run $PIMNT/service/main/run
+install -d $PIMNT/etc/service/
+install -o ted -D $VNW/scripts/run $PIMNT/etc/service/main/run
 rm $PIMNT/etc/init.d/mathkernel
 
 # Set up secrets
 install -o ted $VNW/secrets/secretfile $PIMNT/home/pi/
-cat $VNW/secrets/wpa >> $WPA
+install -d -m 600 $VNW/secrets/wpa >> $PIMNT/etc/wicd/wireless-settings.conf
 
 # Make things run.
 install -o ted $VNW/scripts/run $PIMNT/service/main/run
