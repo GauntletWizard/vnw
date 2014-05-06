@@ -24,6 +24,11 @@ func main() {
 	flag.StringVar(&config.File, "dbfile", "foo.csv", "location to read/store the user database")
 	flag.StringVar(&config.Reqpath, "reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
+	_ = flag.String("log", "", "Logfile. Inactive.")
+	fmt.Println("Log message")
+}
+
+func main() {
 	flag.Parse()
 
 	if *secretFile != "" {
