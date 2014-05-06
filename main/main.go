@@ -27,8 +27,8 @@ func main() {
 	flag.IntVar(&gpio.Pin, "gpiopin", 7, "GPIO Pin to use")
 	flag.IntVar(&core.UTime, "utime", 10, "Number of seconds to unlock on successful swipe")
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
-	flag.StringVar(&config.File, "dbfile", "foo.csv", "location to read/store the user database")
-	flag.StringVar(&config.Reqpath, "reqpath", "http://tcbtech.org/~ted/stuff/foo.csv", "URL of member list")
+	flag.StringVar(&config.File, "dbfile", "cards.csv", "location to read/store the user database")
+	flag.StringVar(&config.Reqpath, "reqpath", "https://verneandwells.appspot.com/rpc/cardCSV", "URL of member list")
 	flag.Parse()
 	setLog()
 
