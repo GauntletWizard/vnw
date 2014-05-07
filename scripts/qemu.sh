@@ -82,6 +82,7 @@ install -d -m 600 $VNW/secrets/wpa >> $PIMNT/etc/wicd/wireless-settings.conf
 # Make things run.
 install -o ted $VNW/scripts/run $PIMNT/service/main/run
 install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
+patch $PIMNT/etc/inittab $VNW/scripts/inittab.patch
 
 # Clear state.
 rm $VNW/var/opt/vnw-run

@@ -1,0 +1,5 @@
+54,55c54
+< #1:2345:respawn:/sbin/getty --noclear 38400 tty1 
+< 1:2345:respawn:/sbin/getty --noclear 38400 tty1 -a pi -o "-f \u SHELL=/usr/bin/tmux" 
+---
+> 1:2345:respawn:/sbin/getty --noclear 38400 tty1 

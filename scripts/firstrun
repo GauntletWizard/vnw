@@ -44,6 +44,11 @@ then
   echo $'0\t0\t*\t*\t*\troot\t/bin/lock' >> /etc/crontab
 	echo "export GOPATH=/home/pi/" >> /home/pi/.bashrc
 	echo "alias go=$GODIR/bin/go" >> /home/pi/.bashrc
+	echo "if [[ `tty` == \"/dev/tty1\" ]]" >> /home/pi/.bashrc
+	echo "then" >> /home/pi/.bashrc
+  echo "tmux new-session -s screen" >> /home/pi/.bashrc
+  echo "fi" >> /home/pi/.bashrc
+
   touch $SEMAPHORE
 fi
 
