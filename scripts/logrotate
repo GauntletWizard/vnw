@@ -1,4 +1,4 @@
-/service/main/door.log {
+/home/pi/door.log {
   rotate 60
   daily
   missingok
