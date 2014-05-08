@@ -71,17 +71,21 @@ chown -R ted:ted $PIMNT/home/pi/src/
 
 # Copy important scripts
 install $VNW/scripts/firstrun $PIMNT/etc/rc.local
-install -d $PIMNT/etc/service/
+install -d $PIMNT/etc/service
+install -o ted -d $PIMNT/etc/service/main
 install -o ted -D $VNW/scripts/run $PIMNT/etc/service/main/run
 rm $PIMNT/etc/init.d/mathkernel
 
 # Set up secrets
 install -o ted $VNW/secrets/secretfile $PIMNT/home/pi/
-install -d -m 600 $VNW/secrets/wpa >> $PIMNT/etc/wicd/wireless-settings.conf
+install -d -m 600 $VNW/secrets/wpa $PIMNT/etc/wicd/wireless-settings.conf
 
 # Make things run.
 install -o ted $VNW/scripts/run $PIMNT/service/main/run
 install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
+
+# Make me hate things less.
+echo "XKBLAYOUT=\"us\"" >> $PIMNT/etc/default/keyboard
 patch $PIMNT/etc/inittab $VNW/scripts/inittab.patch
 
 # Clear state.

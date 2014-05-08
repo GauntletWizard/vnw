@@ -1,2 +1,2 @@
 #!/bin/bash
-main --port :8080 -log door.log
+sudo -u pi main --port :8080 -log /home/pi/door.log --secretfile /home/pi/secretfile
