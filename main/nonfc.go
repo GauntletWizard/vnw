@@ -26,9 +26,6 @@ func main() {
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
 	_ = flag.String("log", "", "Logfile. Inactive.")
 	fmt.Println("Log message")
-}
-
-func main() {
 	flag.Parse()
 
 	if *secretFile != "" {
