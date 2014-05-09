@@ -36,7 +36,7 @@ then
 	cd $MAINDIR
 	GOPATH=$GOPATH $GODIR/bin/go build main.go
 	GOPATH=$GOPATH $GODIR/bin/go build nonfc.go
-	install nonfc /bin/main
+	install main /bin/main
   install ../scripts/lock /bin/
   install ../scripts/unlock /bin/
   
