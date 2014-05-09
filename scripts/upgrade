@@ -1,0 +1,6 @@
+#!/bin/bash
+# Not at all portable script to rebuild and restart.
+SRCDIR=/home/pi/src/vnw/
+go build $SRCDIR/main/main.go
+sudo cp $SRCDIR/main/main /bin/main
+sudo svc -t /etc/service/main
