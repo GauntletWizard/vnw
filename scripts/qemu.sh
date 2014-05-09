@@ -54,7 +54,7 @@ vnw ()
 {
 pimount
 #Stuff to build and deploy master program.
-cp -r $GO $PIMNT/home/pi/
+cp -r $GO $PIMNT/home/pi/go
 cp $LIBNFC $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
 tar -xf libnfc.tar.bz2
@@ -74,15 +74,16 @@ install $VNW/scripts/firstrun $PIMNT/etc/rc.local
 install -d $PIMNT/etc/service
 install -o ted -d $PIMNT/etc/service/main
 install -o ted -D $VNW/scripts/run $PIMNT/etc/service/main/run
+install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
 rm $PIMNT/etc/init.d/mathkernel
 
 # Set up secrets
-install -o ted $VNW/secrets/secretfile $PIMNT/home/pi/
-install -d -m 600 $VNW/secrets/wpa $PIMNT/etc/wicd/wireless-settings.conf
+install -o ted -m 600 $VNW/secrets/secretfile $PIMNT/home/pi/
+install -D -m 600 $VNW/secrets/wpa $PIMNT/etc/wicd/wireless-settings.conf
 
-# Make things run.
-install -o ted $VNW/scripts/run $PIMNT/service/main/run
-install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
+# Debug tools.
+install -d -o ted $PIMNT/home/pi/gpio/gpio0
+install -o ted /dev/null $PIMNT/home/pi/gpio/export
 
 # Make me hate things less.
 echo "XKBLAYOUT=\"us\"" >> $PIMNT/etc/default/keyboard

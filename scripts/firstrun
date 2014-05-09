@@ -18,7 +18,7 @@ then
   # Install our deps
 	apt-get -q -y update
 	export DEBIAN_FRONTEND=noninteractive
-	apt-get -q -y install libusb-dev daemontools vim bzr mercurial wicd-cli tmux unattended-upgrades
+	apt-get -q -y install libusb-dev daemontools vim bzr mercurial wicd-cli tmux unattended-upgrades lsof
 	# Install libnfc
 	cd $LIBNFCDIR
 	$LIBNFCDIR/configure
@@ -26,7 +26,7 @@ then
 	make install
 	ldconfig
 	# Make a custom go, if we don't have the proper version.
-	$GODIR/bin/go --version
+	$GODIR/bin/go --version > /dev/null
 	if [[ $? -ne 2 ]]
 	then
 		cd $GODIR/src/
@@ -36,9 +36,9 @@ then
 	cd $MAINDIR
 	GOPATH=$GOPATH $GODIR/bin/go build main.go
 	GOPATH=$GOPATH $GODIR/bin/go build nonfc.go
-	install nonfc /bin/
-  install scripts/lock /bin/
-  install scripts/unlock /bin/
+	install nonfc /bin/main
+  install ../scripts/lock /bin/
+  install ../scripts/unlock /bin/
   
   # Scripts to make things run.
   echo "America/Los_Angeles" > /etc/timezone
