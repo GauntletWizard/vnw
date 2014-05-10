@@ -7,6 +7,8 @@ GO=/home/ted/dev/go-arm
 WIRELESS=/home/ted/dev/rpi-wireless
 LIBNFC=/home/ted/dev/libnfc-1.7.1.tar.bz2
 WPA=$PIMNT/etc/wpa_supplicant/wpa_supplicant.conf
+# User 1000
+INSTUSER=ted
 
 if [ "$EUID" -ne 0 ];
 then
@@ -54,7 +56,7 @@ vnw ()
 {
 pimount
 #Stuff to build and deploy master program.
-cp -r $GO $PIMNT/home/pi/go
+cp -Tr $GO $PIMNT/home/pi/go
 cp $LIBNFC $PIMNT/home/pi/libnfc.tar.bz2
 cd $PIMNT/home/pi/
 tar -xf libnfc.tar.bz2
@@ -62,28 +64,34 @@ tar -xf libnfc.tar.bz2
 # Drivers
 KERNEL=3.10.25+
 install -p -m 644 $WIRELESS/8188eu.ko $PIMNT/lib/modules/$KERNEL/kernel/drivers/net/wireless
-install -D -p -m 644 $WIRELESS/rtl8188eufw.bin $PIMNT/lib/firmware/rtlwifi/rtl8188eufw.bin
 
 # Copy over main function
-install -o ted -d $PIMNT/home/pi/src/
+install -o $INSTUSER -d $PIMNT/home/pi/src/
 cp -r $VNW $PIMNT/home/pi/src/
 chown -R ted:ted $PIMNT/home/pi/src/
 
+# Do things on the pi
+vnwlocal
+piumount
+}
+
+vnwlocal ()
+{
 # Copy important scripts
 install $VNW/scripts/firstrun $PIMNT/etc/rc.local
 install -d $PIMNT/etc/service
-install -o ted -d $PIMNT/etc/service/main
-install -o ted -D $VNW/scripts/run $PIMNT/etc/service/main/run
+install -o $INSTUSER -d $PIMNT/etc/service/main
+install -o $INSTUSER -D $VNW/scripts/run $PIMNT/etc/service/main/run
 install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
 rm $PIMNT/etc/init.d/mathkernel
 
 # Set up secrets
-install -o ted -m 600 $VNW/secrets/secretfile $PIMNT/home/pi/
+install -o $INSTUSER -m 600 $VNW/secrets/secretfile $PIMNT/home/pi/
 install -D -m 600 $VNW/secrets/wpa $PIMNT/etc/wicd/wireless-settings.conf
 
 # Debug tools.
-install -d -o ted $PIMNT/home/pi/gpio/gpio0
-install -o ted /dev/null $PIMNT/home/pi/gpio/export
+install -d -o $INSTUSER $PIMNT/home/pi/gpio/gpio0
+install -o $INSTUSER /dev/null $PIMNT/home/pi/gpio/export
 
 # Make me hate things less.
 echo "XKBLAYOUT=\"us\"" >> $PIMNT/etc/default/keyboard
@@ -91,16 +99,13 @@ patch $PIMNT/etc/inittab $VNW/scripts/inittab.patch
 
 # Clear state.
 rm $VNW/var/opt/vnw-run
-piumount
-# This is close, but not necessarially right. cigar; hrmm.
-# truncate -s 4008706048
 }
 
 case $1 in
 	pimnt|pimount) pimount ;;
 	piumnt|piumount) piumount ;;
 	mkemu) mkemu ;;
-	mkdreal) mkreal ;;
+	mkreal) mkreal ;;
 	vnw) vnw ;;
 	*) vnw ; mkemu ;;
 esac
