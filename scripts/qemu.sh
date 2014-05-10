@@ -1,14 +1,14 @@
 #!/bin/bash
 PIFILE=/home/ted/pi/2014-01-07-wheezy-raspbian.img
-PIMNT=/home/ted/pi/pimnt
+PIMNT=/
 LOOPDEV=`losetup -f`
-VNW=/home/ted/code/vnw
+VNW=/home/pi/src/vnw
 GO=/home/ted/dev/go-arm
 WIRELESS=/home/ted/dev/rpi-wireless
 LIBNFC=/home/ted/dev/libnfc-1.7.1.tar.bz2
 WPA=$PIMNT/etc/wpa_supplicant/wpa_supplicant.conf
 # User 1000
-INSTUSER=ted
+INSTUSER=pi
 
 if [ "$EUID" -ne 0 ];
 then
@@ -108,5 +108,6 @@ case $1 in
 	mkemu) mkemu ;;
 	mkreal) mkreal ;;
 	vnw) vnw ;;
-	*) vnw ; mkemu ;;
+	vnwlocal) vnwlocal ;;
+	*) vnwlocal ;;
 esac
