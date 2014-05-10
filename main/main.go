@@ -30,7 +30,7 @@ func main() {
 	flag.StringVar(&config.File, "dbfile", "cards.csv", "location to read/store the user database")
 	flag.StringVar(&config.Reqpath, "reqpath", "https://verneandwells.appspot.com/rpc/cardCSV", "URL of member list")
 	flag.StringVar(&config.SAFile, "mailpassword", "", "Password for SMTP Auth")
-	flag.StringVar(&config.SMTPServer, "smtpserver", "smtp.gmail.com", "SMTP Server")
+	flag.StringVar(&config.SMTPServer, "smtpserver", "smtp.gmail.com:587", "SMTP Server")
 	flag.StringVar(&config.Mailto, "mailto", "david@verneandwells.com", "List (comma seperated) of e-mail addresses")
 	flag.Parse()
 	setLog()

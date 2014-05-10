@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/csv"
 	"io"
+	"io/ioutil"
 	"log"
 	"net/http"
 	"net/smtp"
@@ -54,13 +55,12 @@ func Start() {
 	cards := loadMembers(File)
 	Cards = &cards
 	timer := time.Tick(time.Duration(Sleep) * time.Second)
-	f, err := os.Open(SAFile)
+	pass, err := ioutil.ReadFile(SAFile)
 	if err != nil {
 		log.Print("No auth, not e-mailing")
 	} else {
-		var line []byte
-		_, err = f.Read(line)
-		sa = smtp.PlainAuth("", "ted@verneandwells.com", string(line), SMTPServer)
+		hostname := strings.Split(SMTPServer, ":")
+		sa = smtp.PlainAuth("", "ted@verneandwells.com", string(pass), hostname[0])
 		mailto = strings.Split(Mailto, ",")
 	}
 	go func() {
@@ -170,7 +170,7 @@ func (m *Member) Log(id string) {
 	lm := "Member " + m.Name + " opened door with ID " + id
 	log.Print(lm)
 	if sa != nil {
-		text := "From: ted@verneandwells.com\nto: david@verneandwells.com\n\n" + lm
+		text := "From: ted@verneandwells.com\nto: david@verneandwells.com\nSubject: Door opened\n\n" + lm
 		err := smtp.SendMail(SMTPServer, sa, "ted@verneandwells.com", mailto, []byte(text))
 		if err != nil {
 			log.Print("Failed to send mail!", err)
