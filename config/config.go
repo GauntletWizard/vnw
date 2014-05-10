@@ -6,16 +6,23 @@ import (
 	"io"
 	"log"
 	"net/http"
+	"net/smtp"
 	"os"
 	"strconv"
+	"strings"
 	"time"
 )
 
 var (
-	File    string
-	Reqpath string
-	Sleep   int
-	Secret  []byte
+	File       string
+	Reqpath    string
+	Sleep      int
+	Secret     []byte
+	sa         smtp.Auth
+	SAFile     string
+	SMTPServer string
+	Mailto     string
+	mailto     []string
 )
 
 //= flag.Int("sleeptime", 600, "Number of seconds between updates of configfile")
@@ -47,6 +54,15 @@ func Start() {
 	cards := loadMembers(File)
 	Cards = &cards
 	timer := time.Tick(time.Duration(Sleep) * time.Second)
+	f, err := os.Open(SAFile)
+	if err != nil {
+		log.Print("No auth, not e-mailing")
+	} else {
+		var line []byte
+		_, err = f.Read(line)
+		sa = smtp.PlainAuth("", "ted@verneandwells.com", string(line), SMTPServer)
+		mailto = strings.Split(Mailto, ",")
+	}
 	go func() {
 		for {
 			resp, err := c.Post(Reqpath, "text/plain", bytes.NewReader(Secret))
@@ -151,5 +167,13 @@ func validateCardlist(l *Cardlist) bool {
 }
 
 func (m *Member) Log(id string) {
-	log.Print("Member " + m.Name + " opened door with ID " + id)
+	lm := "Member " + m.Name + " opened door with ID " + id
+	log.Print(lm)
+	if sa != nil {
+		text := "From: ted@verneandwells.com\nto: david@verneandwells.com\n\n" + lm
+		err := smtp.SendMail(SMTPServer, sa, "ted@verneandwells.com", mailto, []byte(text))
+		if err != nil {
+			log.Print("Failed to send mail!", err)
+		}
+	}
 }
