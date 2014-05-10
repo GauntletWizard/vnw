@@ -22,6 +22,7 @@ then
   # Install our deps
 	apt-get -q -y update
 	export DEBIAN_FRONTEND=noninteractive
+	apt-get -q -y upgrade
 	apt-get -q -y install libusb-dev daemontools vim bzr mercurial wicd-cli tmux unattended-upgrades lsof
 	# Install libnfc
 	cd $LIBNFCDIR
