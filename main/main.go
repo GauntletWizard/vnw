@@ -25,7 +25,7 @@ func main() {
 	flag.StringVar(&ui.Httplistener, "port", ":80", "Listen Address for webserver")
 	flag.StringVar(&gpio.Gpiodir, "gpiodir", "/sys/class/gpio", "Directory that holds GPIO pins. Exported for testing.")
 	flag.IntVar(&gpio.Pin, "gpiopin", 7, "GPIO Pin to use")
-	flag.IntVar(&core.UTime, "utime", 10, "Number of seconds to unlock on successful swipe")
+	flag.IntVar(&core.UTime, "utime", 5, "Number of seconds to unlock on successful swipe")
 	flag.IntVar(&config.Sleep, "sleeptime", 600, "Number of seconds between updates of configfile")
 	flag.StringVar(&config.File, "dbfile", "cards.csv", "location to read/store the user database")
 	flag.StringVar(&config.Reqpath, "reqpath", "https://verneandwells.appspot.com/rpc/cardCSV", "URL of member list")
@@ -67,7 +67,7 @@ func setLog() {
 	if *logf == "-" {
 		file = os.Stdout
 	} else {
-		file, _ = os.Create(*logf)
+		file, _ = os.OpenFile(*logf, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 	}
 	log.SetOutput(file)
 }
