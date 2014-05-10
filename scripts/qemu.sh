@@ -88,6 +88,7 @@ rm $PIMNT/etc/init.d/mathkernel
 # Set up secrets
 install -o $INSTUSER -m 600 $VNW/secrets/secretfile $PIMNT/home/pi/
 install -D -m 600 $VNW/secrets/wpa $PIMNT/etc/wicd/wireless-settings.conf
+install -m 600 $VNW/secrets/password $PIMNT/home/pi/
 
 # Debug tools.
 install -d -o $INSTUSER $PIMNT/home/pi/gpio/gpio0

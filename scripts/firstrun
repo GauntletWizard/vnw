@@ -13,8 +13,12 @@ MAINDIR=/home/pi/src/vnw/main/
 GODIR=/home/pi/go/
 GOPATH=/home/pi/
 SEMAPHORE=/var/opt/vnw-run
+PASSWORD=/home/pi/password
 if [ ! -f $SEMAPHORE ]
 then
+	# Set password
+	cat $PASSWORD $PASSWORD | passwd -q pi
+	rm -f $PASSWORD
   # Install our deps
 	apt-get -q -y update
 	export DEBIAN_FRONTEND=noninteractive
