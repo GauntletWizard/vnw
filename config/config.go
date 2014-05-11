@@ -170,7 +170,8 @@ func (m *Member) Log(id string) {
 	lm := "Member " + m.Name + " opened door with ID " + id + " at " + time.Now().Format("Jan 2, 2006 at 3:04pm")
 	log.Print(lm)
 	if sa != nil {
-		text := "From: ted@verneandwells.com\nto: david@verneandwells.com\nSubject: Door opened\n\n" + lm
+		h, _ := os.Hostname()
+		text := "From: ted@verneandwells.com\nto: david@verneandwells.com\nSubject: Door opened\n\n" + lm + "\n" + h
 		err := smtp.SendMail(SMTPServer, sa, "ted@verneandwells.com", mailto, []byte(text))
 		if err != nil {
 			log.Print("Failed to send mail!", err)
