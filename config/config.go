@@ -167,7 +167,7 @@ func validateCardlist(l *Cardlist) bool {
 }
 
 func (m *Member) Log(id string) {
-	lm := "Member " + m.Name + " opened door with ID " + id
+	lm := "Member " + m.Name + " opened door with ID " + id + " at " + time.Now().Format("Jan 2, 2006 at 3:04pm")
 	log.Print(lm)
 	if sa != nil {
 		text := "From: ted@verneandwells.com\nto: david@verneandwells.com\nSubject: Door opened\n\n" + lm
