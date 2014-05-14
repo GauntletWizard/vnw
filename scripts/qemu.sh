@@ -74,7 +74,7 @@ install $VNW/scripts/firstrun $PIMNT/etc/rc.local
 install -d $PIMNT/etc/service
 install -o ted -d $PIMNT/etc/service/main
 install -o ted -D $VNW/scripts/run $PIMNT/etc/service/main/run
-install $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
+install -m 644 $VNW/scripts/logrotate $PIMNT/etc/logrotate.d/main
 rm $PIMNT/etc/init.d/mathkernel
 
 # Set up secrets
