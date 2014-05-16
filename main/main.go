@@ -54,8 +54,10 @@ func main() {
 	log.Println("Starting UI Server")
 	c := make(chan os.Signal, 0)
 	go func() {
-		<-c
-		setLog()
+		for {
+			<-c
+			setLog()
+		}
 	}()
 	signal.Notify(c, os.Signal(syscall.SIGHUP))
 	ui.Start()
