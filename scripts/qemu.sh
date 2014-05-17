@@ -97,7 +97,7 @@ install -o $INSTUSER /dev/null $PIMNT/home/pi/gpio/export
 
 # Make me hate things less.
 echo "XKBLAYOUT=\"us\"" >> $PIMNT/etc/default/keyboard
-patch $PIMNT/etc/inittab $VNW/scripts/inittab.patch
+patch -N $PIMNT/etc/inittab $VNW/scripts/inittab.patch
 
 # Clear state.
 rm $VNW/var/opt/vnw-run
