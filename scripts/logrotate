@@ -3,6 +3,6 @@
   daily
   missingok
   postrotate
-      /usr/bin/svc -h /etc/service/main
+      /usr/bin/killall -HUP main
   endscript
 }
