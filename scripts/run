@@ -1,2 +1,2 @@
 #!/bin/bash
-exec setuidgid pi main --port :8080 -log /home/pi/door.log --secretfile /home/pi/secretfile --mailpassword /home/pi/mailpassword
+exec sudo -u pi main --port :8080 -log /home/pi/door.log --secretfile /home/pi/secretfile --mailpassword /home/pi/mailpassword
