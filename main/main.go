@@ -54,12 +54,6 @@ func main() {
 	log.Println("Starting UI Server")
 	c := make(chan os.Signal, 0)
 	go setLog(c)
-	func() {
-		for {
-			<-c
-			setLog()
-		}
-	}()
 	signal.Notify(c, os.Signal(syscall.SIGHUP))
 	ui.Start()
 	log.Println("Shouldn't reach this")
@@ -67,8 +61,6 @@ func main() {
 
 func setLog(c chan os.Signal) {
 	var file *os.File
-	var oldfile *os.File
-	oldfile = nil
 	for {
 		<-c
 		oldfile = nil
@@ -78,12 +70,9 @@ func setLog(c chan os.Signal) {
 		if *logf == "-" {
 			file = os.Stdout
 		} else {
-			oldfile = file
+			defer file.Close()
 			file, _ = os.OpenFile(*logf, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
 		}
 		log.SetOutput(file)
-		if oldfile != nil {
-			oldfile.Close()
-		}
 	}
 }
