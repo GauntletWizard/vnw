@@ -53,7 +53,8 @@ func main() {
 	go nfc.Poll()
 	log.Println("Starting UI Server")
 	c := make(chan os.Signal, 0)
-	go func() {
+	go setLog(c)
+	func() {
 		for {
 			<-c
 			setLog()
@@ -64,15 +65,25 @@ func main() {
 	log.Println("Shouldn't reach this")
 }
 
-func setLog() {
+func setLog(c chan os.Signal) {
 	var file *os.File
-	if *logf == "" {
-		return
+	var oldfile *os.File
+	oldfile = nil
+	for {
+		<-c
+		oldfile = nil
+		if *logf == "" {
+			return
+		}
+		if *logf == "-" {
+			file = os.Stdout
+		} else {
+			oldfile = file
+			file, _ = os.OpenFile(*logf, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
+		}
+		log.SetOutput(file)
+		if oldfile != nil {
+			oldfile.Close()
+		}
 	}
-	if *logf == "-" {
-		file = os.Stdout
-	} else {
-		file, _ = os.OpenFile(*logf, os.O_RDWR|os.O_APPEND|os.O_CREATE, 0660)
-	}
-	log.SetOutput(file)
 }
