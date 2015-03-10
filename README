@@ -1,4 +1,5 @@
-
+Package vnw implements a NFC Reading door lock system.
+http://www.vnw.club/
 
 Install checklist:
 NTPD - Nothing builds right without it
